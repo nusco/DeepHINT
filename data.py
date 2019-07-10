@@ -26,7 +26,7 @@ def seq_matrix(seq_list, dim):
 def bed_to_fasta():
 	beds = ['data/GD_MSE_test_pos.bed','data/GD_MSE_test_neg.bed']
 	for bed in beds:
-		os.system("bedtools getfasta -fi ../ref/hg19_all.fa -bed " + bed +" -fo " + bed + ".fasta")
+		os.system("bedtools getfasta -fi ./hg19/hg19.fa -bed " + bed +" -fo " + bed + ".fasta")
 
 def fasta_to_matrix():
 	seq_name = ['data/GD_MSE_test_pos.bed','data/GD_MSE_test_neg.bed']
