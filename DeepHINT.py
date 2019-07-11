@@ -4,12 +4,10 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers import Input, merge
 from keras.layers.convolutional import Convolution1D, MaxPooling1D
 from keras.models import Model
+from keras.constraints import maxnorm
 from keras import backend as K
 from keras.engine.topology import Layer
 from keras import activations, initializers, regularizers, constraints
-
-np.random.seed(1337)  # for reproducibility
-
 
 np.random.seed(1337)  # for reproducibility
 
