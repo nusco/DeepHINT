@@ -95,7 +95,7 @@ class AttentionFlatten(Layer):
 
     def compute_output_shape(self, input_shape):
         if not all(input_shape[1:]):
-            raise Exception('The shape of the input to "Flatten" '
+            raise Exception('The shape of the input to "AttentionFlatten" '
                             'is not fully defined '
                             '(got ' + str(input_shape[1:]) + '. '
                             'Make sure to pass a complete "input_shape" '
