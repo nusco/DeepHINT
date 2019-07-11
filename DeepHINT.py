@@ -147,7 +147,7 @@ def set_up_model():
                   optimizer='nadam',
                   metrics=['accuracy'])
 
-    print(model.summary())
+    model.summary()
     return model
 
 
