@@ -88,10 +88,12 @@ class Attention(Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 
-class attention_flatten(Layer):  # Based on the source code of Keras flatten
+# Based on the source code of Keras flatten:
+class AttentionFlatten(Layer):
+
     def __init__(self, keep_dim, **kwargs):
         self.keep_dim = keep_dim
-        super(attention_flatten, self).__init__(**kwargs)
+        super(AttentionFlatten, self).__init__(**kwargs)
 
     def compute_output_shape(self, input_shape):
         if not all(input_shape[1:]):
@@ -107,52 +109,51 @@ class attention_flatten(Layer):  # Based on the source code of Keras flatten
         x = x[:, :self.keep_dim]
         return K.batch_flatten(x)
 
-    def set_up_model_up():
-        print('building model')
 
-        seq_input_shape = (2000, 4)
-        nb_filter = 64
-        filter_length = 6
-        input_shape = (2000, 4)
-        attentionhidden = 256
+def set_up_model():
+    print('building model')
 
-        seq_input = Input(shape=seq_input_shape, name='seq_input')
-        convul1 = Convolution1D(filters=nb_filter,
-                                kernel_size=filter_length,
-                                padding='valid',
-                                activation='relu',
-                                kernel_constraint=maxnorm(3),
-                                subsample_length=1)
+    seq_input_shape = (2000, 4)
+    nb_filter = 64
+    filter_length = 6
+    input_shape = (2000, 4)
+    attentionhidden = 256
 
-        pool_ma1 = MaxPooling1D(pool_size=3)
-        dropout1 = Dropout(0.5977908689086315)
-        dropout2 = Dropout(0.30131233477637737)
-        decoder = Attention(hidden=attentionhidden, activation='linear')
-        dense1 = Dense(1)
-        dense2 = Dense(1)
+    seq_input = Input(shape=seq_input_shape, name='seq_input')
+    convol1 = Convolution1D(filters=nb_filter,
+                            kernel_size=filter_length,
+                            padding='valid',
+                            activation='relu',
+                            kernel_constraint=maxnorm(3),
+                            subsample_length=1)
 
-        output_1 = pool_ma1(convul1(seq_input))
-        output_2 = dropout1(output_1)
-        att_decoder = decoder(output_2)
-        output_3 = attention_flatten(output_2._keras_shape[2])(att_decoder)
+    pool_ma1 = MaxPooling1D(pool_size=3)
+    dropout1 = Dropout(0.5977908689086315)
+    dropout2 = Dropout(0.30131233477637737)
+    decoder = Attention(hidden=attentionhidden, activation='linear')
+    dense1 = Dense(1)
+    dense2 = Dense(1)
 
-        output_4 = dense1(dropout2(Flatten()(output_2)))
-        all_outp = merge([output_3, output_4], mode='concat')
-        output_5 = dense2(all_outp)
-        output_f = Activation('sigmoid')(output_5)
+    output_1 = pool_ma1(convol1(seq_input))
+    output_2 = dropout1(output_1)
+    att_decoder = decoder(output_2)
+    output_3 = AttentionFlatten(output_2._keras_shape[2])(att_decoder)
 
-        model = Model(inputs=seq_input, outputs=output_f)
-        model.compile(loss='binary_crossentropy',
-                      optimizer='nadam',
-                      metrics=['accuracy'])
+    output_4 = dense1(dropout2(Flatten()(output_2)))
+    all_outp = merge([output_3, output_4], mode='concat')
+    output_5 = dense2(all_outp)
+    output_f = Activation('sigmoid')(output_5)
 
-        print(model.summary())
-        return model
+    model = Model(inputs=seq_input, outputs=output_f)
+    model.compile(loss='binary_crossentropy',
+                  optimizer='nadam',
+                  metrics=['accuracy'])
+
+    print(model.summary())
+    return model
 
 
-def test(n_estimators=16):
-    model = set_up_model_up()
-
+def test(model, n_estimators):
     X_test = np.load('data/X_test.npy')
     y_test = np.load('data/y_test.npy')
 
@@ -184,5 +185,5 @@ def test(n_estimators=16):
 
 
 if __name__ == '__main__':
-    set_up_model_up()
-    test(n_estimators=16)
+    model = set_up_model()
+    test(model, n_estimators=16)
