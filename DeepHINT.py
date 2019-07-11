@@ -1,35 +1,17 @@
-from __future__ import print_function, division
 import numpy as np
-import h5py
-import scipy.io
 import random
-import sys,os
-import itertools
-import numbers
-from collections import Counter
-from warnings import warn
-from abc import ABCMeta, abstractmethod
 
 np.random.seed(1337)  # for reproducibility
 
-from keras.optimizers import RMSprop, SGD
-from keras.models import Sequential, model_from_yaml
 from keras.layers.core import Dense, Dropout, Activation, Flatten
-import keras.layers.core as core
-from keras.layers import Dense, Dropout, Embedding, LSTM, Input, merge, multiply, Reshape
+from keras.layers import Input, merge
 from keras.layers.convolutional import Convolution1D, MaxPooling1D
-from keras.layers.wrappers import Bidirectional
 from keras.constraints import maxnorm
-from keras.layers.recurrent import LSTM, GRU
-from keras.callbacks import ModelCheckpoint, EarlyStopping
-from keras.layers import Embedding
-from sklearn.metrics import fbeta_score, roc_curve, auc, roc_auc_score, average_precision_score
-from keras.regularizers import l2, l1, l1_l2
+from sklearn.metrics import roc_auc_score, average_precision_score
 from keras.models import Model
 from keras import backend as K
 from keras.engine.topology import Layer
 from keras import activations, initializers, regularizers, constraints
-from keras.engine import InputSpec
 
 
 class Attention(Layer):
